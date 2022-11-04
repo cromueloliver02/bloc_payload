@@ -1,8 +1,8 @@
 import 'dart:math' as math;
 
-import 'package:bloc_payload/blocs/theme/theme_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'cubits/theme/theme_cubit.dart';
 
 void main() => runApp(const MyApp());
 
@@ -11,20 +11,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ThemeBloc>(
-      create: (ctx) => ThemeBloc(),
-      child: BlocSelector<ThemeBloc, ThemeState, AppTheme>(
+    return BlocProvider<ThemeCubit>(
+      create: (ctx) => ThemeCubit(),
+      child: BlocSelector<ThemeCubit, ThemeState, AppTheme>(
         selector: (state) => state.appTheme,
-        builder: (ctx, appTheme) {
-          return MaterialApp(
-            title: 'Bloc Payload',
-            debugShowCheckedModeBanner: false,
-            theme: appTheme == AppTheme.light
-                ? ThemeData.light()
-                : ThemeData.dark(),
-            home: const HomePage(),
-          );
-        },
+        builder: (ctx, appTheme) => MaterialApp(
+          title: 'Bloc Payload',
+          debugShowCheckedModeBanner: false,
+          theme:
+              appTheme == AppTheme.light ? ThemeData.light() : ThemeData.dark(),
+          home: const HomePage(),
+        ),
       ),
     );
   }
@@ -34,10 +31,10 @@ class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   void _onChangeTheme(BuildContext ctx) {
-    final bloc = ctx.read<ThemeBloc>();
+    final bloc = ctx.read<ThemeCubit>();
     final randInt = math.Random().nextInt(10);
 
-    bloc.add(ChangeThemeEvent(randomInt: randInt));
+    bloc.changeTheme(randInt);
   }
 
   @override
